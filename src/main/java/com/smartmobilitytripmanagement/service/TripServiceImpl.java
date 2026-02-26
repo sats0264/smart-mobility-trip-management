@@ -2,6 +2,7 @@ package com.smartmobilitytripmanagement.service;
 
 import com.smartmobilitytripmanagement.beans.Trip;
 import com.smartmobilitytripmanagement.dto.UserDTO;
+import com.smartmobilitytripmanagement.error.ResourceNotFoundException;
 import com.smartmobilitytripmanagement.proxy.UserProxy;
 import com.smartmobilitytripmanagement.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +21,20 @@ public class TripServiceImpl implements TripService {
     // 1. Démarrer un trajet
     @Override
     public Trip startTrip(Long userId, String transportType, String startLocation) {
-        // Appel au microservice User via Feign
         UserDTO user = userProxy.getUserById(userId);
-        if (user == null) {
-            throw new RuntimeException("Utilisateur introuvable. Trajet refusé.");
-        }
 
-        // Création du trajet via le constructeur personnalisé
         Trip trip = new Trip(userId, transportType, startLocation);
         return tripRepository.save(trip);
     }
 
-    // 2. Terminer un trajet avec calcul de prix
+    // 2. Terminer un trajet
     @Override
     public Trip completeTrip(Long tripId, String endLocation, Double price) {
-        Trip trip = tripRepository.findById(tripId) // Utilisation directe du Long
-                .orElseThrow(() -> new RuntimeException("Trajet introuvable ID: " + tripId));
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable avec l'ID: " + tripId));
 
         if (!"STARTED".equals(trip.getStatus())) {
-            throw new RuntimeException("Impossible de terminer : le trajet est déjà " + trip.getStatus());
+            throw new IllegalStateException("Impossible de terminer : le trajet est déjà " + trip.getStatus());
         }
 
         trip.setEndLocation(endLocation);
@@ -53,35 +49,25 @@ public class TripServiceImpl implements TripService {
     @Override
     public Trip cancelTrip(Long tripId) {
         Trip trip = tripRepository.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trajet introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Impossible d'annuler : Trajet introuvable"));
 
         if ("COMPLETED".equals(trip.getStatus())) {
-            throw new RuntimeException("Impossible d'annuler un trajet déjà terminé.");
+            throw new IllegalStateException("Impossible d'annuler un trajet déjà terminé.");
         }
 
         trip.setStatus("CANCELLED");
         return tripRepository.save(trip);
     }
 
-    // 4. Sauvegarde générique (utilisée par ton endpoint /save)
     @Override
     public Trip saveTrip(Trip trip) {
-        // On s'assure que l'ID utilisateur est valide avant de persister
-        UserDTO user = userProxy.getUserById(trip.getUserId());
-        if (user == null) {
-            throw new RuntimeException("Sauvegarde impossible : Utilisateur " + trip.getUserId() + " n'existe pas.");
-        }
+        userProxy.getUserById(trip.getUserId());
         return tripRepository.save(trip);
     }
 
-    // 5. Historique (méthode appelée par le Controller)
     @Override
     public List<Trip> getUserHistory(Long userId) {
-        return tripRepository.findByUserId(userId);
-    }
-
-    // 6. Historique (version alternative du Service)
-    public List<Trip> getHistory(Long userId) {
+        userProxy.getUserById(userId);
         return tripRepository.findByUserId(userId);
     }
 
