@@ -5,7 +5,7 @@ import com.smartmobilitytripmanagement.beans.Trip;
 import java.util.List;
 
 public interface TripService {
-    Trip startTrip(Long userId, String transportType, String startLocation);
+    Trip startTrip(String userId, String transportType, String startLocation);
 
     Trip completeTrip(Long tripId, String endLocation);
 
@@ -15,5 +15,5 @@ public interface TripService {
 
     List<Trip> findAll();
 
-    List<Trip> getUserHistory(Long userId);
+    List<Trip> getUserHistory(String userId);
 }

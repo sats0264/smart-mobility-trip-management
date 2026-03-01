@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TripCompletedEvent {
     private Long tripId;
-    private Long userId;
+    private String userId;
     private String transportType;
     private LocalDateTime startTime;
     private String startLocation;

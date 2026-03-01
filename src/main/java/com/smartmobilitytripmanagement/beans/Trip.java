@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Entity
@@ -15,7 +15,7 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private String userId;
 
     @Column(name = "transport_type")
     private String transportType; // BUS, BRT, TER
@@ -34,16 +34,15 @@ public class Trip {
 
     private String status; // STARTED, COMPLETED, CANCELLED
 
+    public Trip() {
+    }
 
-
-    public Trip() {}
-    public Trip(Long userId, String transportType, String startLocation) {
+    public Trip(String userId, String transportType, String startLocation) {
         this.userId = userId;
         this.transportType = transportType;
         this.startLocation = startLocation;
         this.startTime = LocalDateTime.now();
         this.status = "STARTED";
     }
-
 
 }

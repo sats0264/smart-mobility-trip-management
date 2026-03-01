@@ -18,7 +18,7 @@ public class TripController {
     // 1. Enregistrer/Démarrer un trajet
     @PostMapping("/start")
     public ResponseEntity<Trip> startTrip(
-            @RequestParam Long userId,
+            @RequestParam String userId,
             @RequestParam String transportType,
             @RequestParam String startLocation) {
 
@@ -38,7 +38,7 @@ public class TripController {
 
     // 3. Lire l'historique d'un utilisateur
     @GetMapping("/history/{userId}")
-    public ResponseEntity<List<Trip>> getHistory(@PathVariable Long userId) {
+    public ResponseEntity<List<Trip>> getHistory(@PathVariable String userId) {
         List<Trip> history = tripService.getUserHistory(userId);
         return ResponseEntity.ok(history);
     }

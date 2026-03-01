@@ -26,7 +26,7 @@ public class TripServiceImpl implements TripService {
 
     // 1. Démarrer un trajet
     @Override
-    public Trip startTrip(Long userId, String transportType, String startLocation) {
+    public Trip startTrip(String userId, String transportType, String startLocation) {
         userProxy.getUserById(userId);
 
         Trip trip = new Trip(userId, transportType, startLocation);
@@ -87,7 +87,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<Trip> getUserHistory(Long userId) {
+    public List<Trip> getUserHistory(String userId) {
         userProxy.getUserById(userId);
         return tripRepository.findByUserId(userId);
     }
