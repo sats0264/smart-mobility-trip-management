@@ -4,7 +4,9 @@ import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.*;
+import org.springframework.amqp.support.converter.JacksonJavaTypeMapper;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,13 +15,11 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE = "trip.exchange";
     public static final String COMPLETED_QUEUE = "trip.completed.queue";
-    public static final String PRICED_QUEUE = "trip.priced.queue";
     public static final String COMPLETED_ROUTING_KEY = "trip.completed";
-    public static final String TRIP_PRICED_ROUTING_KEY = "trip.priced";
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE);
+    public DirectExchange exchange() {
+        return new DirectExchange(EXCHANGE);
     }
 
     @Bean
@@ -28,18 +28,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue pricedQueue() {
-        return new Queue(PRICED_QUEUE);
-    }
-
-    @Bean
-    public Binding bindingCompleted(Queue completedQueue, TopicExchange exchange) {
+    public Binding bindingCompleted(Queue completedQueue, DirectExchange exchange) {
         return BindingBuilder.bind(completedQueue).to(exchange).with(COMPLETED_ROUTING_KEY);
-    }
-
-    @Bean
-    public Binding bindingPriced(Queue pricedQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(pricedQueue).to(exchange).with(TRIP_PRICED_ROUTING_KEY);
     }
 
     @Bean
