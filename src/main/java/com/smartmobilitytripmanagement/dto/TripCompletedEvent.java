@@ -15,6 +15,7 @@ public class TripCompletedEvent {
     private Long tripId;
     private String userId;
     private String transportType;
+    private Long transportLineId;
     private LocalDateTime startTime;
     private String startLocation;
     private LocalDateTime endTime;

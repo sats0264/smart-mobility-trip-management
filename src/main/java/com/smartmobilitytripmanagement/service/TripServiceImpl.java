@@ -26,10 +26,10 @@ public class TripServiceImpl implements TripService {
 
     // 1. Démarrer un trajet
     @Override
-    public Trip startTrip(String userId, String transportType, String startLocation) {
+    public Trip startTrip(String userId, String transportType, String startLocation, Long transportLineId) {
         userProxy.getUserById(userId);
 
-        Trip trip = new Trip(userId, transportType, startLocation);
+        Trip trip = new Trip(userId, transportType, startLocation, transportLineId);
         return tripRepository.save(trip);
     }
 
@@ -54,6 +54,7 @@ public class TripServiceImpl implements TripService {
                 .tripId(savedTrip.getId())
                 .userId(savedTrip.getUserId())
                 .transportType(savedTrip.getTransportType())
+                .transportLineId(savedTrip.getTransportLineId())
                 .startTime(savedTrip.getStartTime())
                 .startLocation(savedTrip.getStartLocation())
                 .endTime(savedTrip.getEndTime())
@@ -67,6 +68,7 @@ public class TripServiceImpl implements TripService {
     }
 
     // 3. Annuler un trajet
+    /// TODO : We can't Cancel the trip once started
     @Override
     public Trip cancelTrip(Long tripId) {
         Trip trip = tripRepository.findById(tripId)

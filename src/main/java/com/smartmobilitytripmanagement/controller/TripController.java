@@ -20,9 +20,10 @@ public class TripController {
     public ResponseEntity<Trip> startTrip(
             @RequestParam String userId,
             @RequestParam String transportType,
-            @RequestParam String startLocation) {
+            @RequestParam String startLocation,
+            @RequestParam Long transportLineId) {
 
-        Trip newTrip = tripService.startTrip(userId, transportType, startLocation);
+        Trip newTrip = tripService.startTrip(userId, transportType, startLocation, transportLineId);
         return ResponseEntity.ok(newTrip);
     }
 

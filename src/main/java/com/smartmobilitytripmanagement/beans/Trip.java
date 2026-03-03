@@ -20,6 +20,9 @@ public class Trip {
     @Column(name = "transport_type")
     private String transportType; // BUS, BRT, TER
 
+    @Column(name = "transport_line_id")
+    private Long transportLineId;
+
     @Column(name = "start_time")
     private LocalDateTime startTime;
 
@@ -37,10 +40,11 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(String userId, String transportType, String startLocation) {
+    public Trip(String userId, String transportType, String startLocation, Long transportLineId) {
         this.userId = userId;
         this.transportType = transportType;
         this.startLocation = startLocation;
+        this.transportLineId = transportLineId;
         this.startTime = LocalDateTime.now();
         this.status = "STARTED";
     }
