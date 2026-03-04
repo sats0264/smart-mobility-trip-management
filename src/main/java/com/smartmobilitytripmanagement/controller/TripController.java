@@ -31,9 +31,10 @@ public class TripController {
     @PutMapping("/complete/{id}")
     public ResponseEntity<Trip> completeTrip(
             @PathVariable Long id,
-            @RequestParam String endLocation) {
+            @RequestParam String endLocation,
+            @RequestParam Long transportLineId) {
 
-        Trip completedTrip = tripService.completeTrip(id, endLocation);
+        Trip completedTrip = tripService.completeTrip(id, endLocation, transportLineId);
         return ResponseEntity.ok(completedTrip);
     }
 
